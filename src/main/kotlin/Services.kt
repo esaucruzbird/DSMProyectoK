@@ -163,7 +163,7 @@ class BillingService(
             body = body
         )
 
-        cart.clear()
+        //cart.clear()
         AppLogger.info("Checkout completado para ${user.username}, factura ${invoice.number}")
         return CheckoutResult(invoice, file, emailSent)
     }

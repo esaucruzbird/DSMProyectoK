@@ -57,8 +57,18 @@ class Cart {
 
     fun remove(productId: Int): Boolean = items.remove(productId) != null
 
-    fun clear() {
-        items.clear()
+    //fun clear() {
+    //    items.clear()
+    //}
+
+    fun decrease(productId: Int, quantity: Int): Int? {
+        val current = items[productId] ?: return null
+        val removed = minOf(quantity, current.quantity)
+        current.quantity -= removed
+        if (current.quantity <= 0) {
+            items.remove(productId)
+        }
+        return removed
     }
 
     fun isEmpty(): Boolean = items.isEmpty()

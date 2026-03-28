@@ -101,7 +101,7 @@ class StoreApp {
                 println("1) Ver productos")
                 println("2) Agregar producto al carrito")
                 println("3) Ver carrito")
-                println("4) Eliminar producto del carrito")
+                println("4) Quitar unidades del carrito")
                 println("5) Confirmar compra / Generar factura")
                 if (user.role.canManageProducts) {
                     println("6) Administrar productos")
@@ -243,11 +243,28 @@ class StoreApp {
             return
         }
 
-        if (cart.remove(productId)) {
-            eventListener.onProductRemoved(user, item.name, item.quantity)
-            println("Producto eliminado del carrito.")
-        } else {
-            println("No se pudo eliminar el producto.")
+        while (true) {
+            val quantity = InputUtil.readPositiveInt(
+                "¿Cuántas unidades desea eliminar de ${item.name}? (en carrito: ${item.quantity}): "
+            )
+
+            if (quantity <= item.quantity) {
+                val removed = cart.decrease(productId, quantity) ?: 0
+                if (removed > 0) {
+                    eventListener.onProductRemoved(user, item.name, removed)
+                    println("Se eliminaron $removed unidad(es) de ${item.name}.")
+                }
+                return
+            }
+
+            println("La cantidad solicitada supera lo que hay en el carrito.")
+            println("1) Volver a ingresar una cantidad")
+            println("2) Salir al menú principal sin modificar el carrito")
+
+            when (InputUtil.readInt("Seleccione: ", 1, 2)) {
+                1 -> continue
+                2 -> return
+            }
         }
     }
 
